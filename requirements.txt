@@ -1,0 +1,4 @@
+websocket-client>=1.6   # remote control WebSocket
+numpy>=1.24             # screenshots (YUV -> RGB)
+pillow>=10              # screenshots (PNG)
+cryptography>=41        # optional: tvshot/samsung_cert.py (Samsung certificate flow)

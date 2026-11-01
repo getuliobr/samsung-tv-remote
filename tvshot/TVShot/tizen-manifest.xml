@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="io.github.getulio.tvshot" version="1.0.0" api-version="6.5" xmlns="http://tizen.org/ns/packages">
+    <author>Getulio</author>
+    <profile name="tv" />
+    <service-application appid="io.github.getulio.tvshot" exec="TVShot.dll" multiple="false" nodisplay="true"
+                         taskmanage="false" api-version="9" type="dotnet" on-boot="true" auto-restart="true">
+        <label>TVShot</label>
+        <icon>tvshot.png</icon>
+        <splash-screens />
+    </service-application>
+    <shortcut-list />
+    <privileges>
+        <privilege>http://tizen.org/privilege/internet</privilege>
+    </privileges>
+    <dependencies />
+    <provides-appdefined-privileges />
+</manifest>

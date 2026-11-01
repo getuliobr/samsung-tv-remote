@@ -1,0 +1,19 @@
+# local environment
+.venv/
+__pycache__/
+.DS_Store
+
+# secrets / per-TV state (pairing token, Samsung certs, account token)
+tv_config.json
+tvshot/cert/
+tvshot/access.json
+tvshot/ca/
+
+# outputs
+screenshots/
+*.png
+!tvshot/TVShot/shared/res/*.png
+
+# .NET build output
+tvshot/TVShot/bin/
+tvshot/TVShot/obj/
