@@ -132,3 +132,7 @@ tvshot/
 
 - [reisxd/HyperTizen](https://github.com/reisxd/HyperTizen) and forks, for the capture entry points.
 - [reisxd/tizen.js](https://github.com/reisxd/tizen.js) and TizenBrewInstaller, for the sdb and Samsung certificate flows.
+
+## License
+
+[MIT](LICENSE)
