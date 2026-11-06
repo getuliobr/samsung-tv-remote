@@ -64,7 +64,13 @@ with tv:
 
 - Listing installed apps (`ed.installedApp.get`) gets no reply; `apps` probes the IDs in `KNOWN_APPS` instead.
 - Launching apps over the WebSocket (`ed.apps.launch`) is ignored; `launch` uses the REST call, which works for
-  store apps only (system screens such as the Apps panel can't be opened by ID).
+  store apps only (system screens such as the Apps panel can't be opened by ID). `NATIVE_LAUNCH` and `DEEP_LINK`
+  both fail, with the socket held open or closed at once, and the TV sends no reply. Keys on the same socket still
+  work, so only this message is dropped.
+- `remote.py browser` sends the same message, so it does nothing. Its REST status returns 404 for
+  `org.tizen.browser` and `3201907018784`, so there is no known working way to open a URL yet.
+- A cold start of YouTube can stop on the profile picker. A cast then still prints `Tocando na TV` and `apps` shows
+  YouTube `(on screen)`, but nothing plays until a profile is chosen. Check with `shot`.
 - YouTube: DIAL `POST` returns 403 and deep links are ignored. Use `remote.py youtube`, which casts through the
   Lounge API.
 - Wake-on-LAN over Wi-Fi needs **Settings → General → Network → Expert Settings → Power On with Mobile**.

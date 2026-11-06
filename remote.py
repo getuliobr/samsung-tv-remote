@@ -76,6 +76,11 @@ def main(argv):
     elif cmd == "on":
         tv.power_on()
         print("Wake-on-LAN sent.")
+    elif cmd == "launch":
+        if len(args) != 1:
+            raise SystemExit("Usage: remote.py launch <appId> (deep links are not supported)")
+        tv.launch_app_rest(args[0])
+        print(f"Launched {args[0]}.")
     else:
         with tv:
             if cmd == "key":
@@ -84,8 +89,6 @@ def main(argv):
                 tv.hold(args[0], float(args[1]))
             elif cmd == "text":
                 tv.type_text(" ".join(args))
-            elif cmd == "launch":
-                tv.launch_app(args[0], args[1] if len(args) > 1 else None)
             elif cmd == "browser":
                 tv.open_browser(args[0])
             elif cmd == "off":
