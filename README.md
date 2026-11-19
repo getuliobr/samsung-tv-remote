@@ -92,6 +92,37 @@ resolution, captures 960x540 tiles and stitches them, pausing playback so all ti
 checks the result against the TV's own downscaled frame and raises an error rather than return a broken image.
 DRM-protected video (e.g. Netflix) may refuse capture.
 
+The video plane carries the raw input signal. An HDR10 source (such as a PS5) sends PQ/BT.2020, which looks
+washed out if decoded as SDR. `shot --hd` and the live view's "Só vídeo" mode detect this by comparing the video
+plane with the TV's tone-mapped `screen` capture, and convert it to SDR. A capture can also fail without an error:
+the TV may return an all-black frame with `res=0`. `shot` then prints a warning, and the live view shows a notice.
+
+**Known issue (open):** a `shot --hd` of the PS5 home screen at 3840x2160 came back with the bottom row of tiles
+misplaced. A piece of one card was repeated and two cards' text overlapped. The final similarity check still
+passed, so it did not catch this. The capture ran with `freeze=False` over the PS5's animated background. The
+cause is not known yet: the background may have changed between tiles, or `vmain_crop` may misbehave near the
+bottom edge of a 4K source. Next step: repeat on a still frame and compare each tile with the matching region of
+the downscaled frame.
+
+### PS5 (HDMI with HDCP) and the Multi View workaround
+
+With a PS5 on HDMI (HDCP on in the PS5), every capture returns `-4`. That is the return value of Samsung's
+capture library; the "DRM-protected" text is TVShot's own label. The block starts at the first PS5 frame
+after the TV sets up the signal full screen, which happens on an input switch or a **Modo Jogo** change. It
+lasts until the signal is set up again. Every `fn=` mode fails, and `/cap2` returns `-95`.
+
+**Workaround:** open the PS5 through **Multi View**: Home → sidebar *Configurações* → first quick-panel item
+*Multi View* → `ENTER` → `RIGHT` to *PlayStation 5* → `ENTER`. The PS5 pane can be captured. Then press
+`KEY_HOME` and close the home UI. The PS5 goes full screen and stays capturable, in-game and with HDR too, until
+the input is selected again. On joining Multi View the PS5 may show "Ajustar área de exibição".
+
+- Keep remote keys at least ~0.8 s apart while the TV quick panel is open over the PS5. A fast burst brought
+  `-4` back three times. With no TV menu open, arrow keys go to the PS5 over CEC.
+- Ruled out as the cause: how the input is picked (Source menu vs Gaming Hub), what the PS5 shows, HDMI
+  *Expansão do Sinal de Entrada* on/off, and Game Mode (Desativado, Ativado or Automático all give `-4` after an
+  input switch). 120 Hz/VRR wasn't involved: the block shows up at 60 Hz with VRR off.
+- Not tested: turning HDCP off on the PS5.
+
 ### Install TVShot
 
 1. **Developer Mode on the TV**: open **Apps → Settings** (on newer UIs: Apps tab, scroll to *Config* →
@@ -128,7 +159,8 @@ tvshot/
   TVShot/            the on-TV service (C#, Tizen.NET)
   deploy.py          build + install + start TVShot over sdb
   sdb.py             minimal sdb client
-  shot.py            fetch frames, NV12 -> RGB, HD tile stitching
+  shot.py            fetch frames, NV12 / HDR10 -> RGB, HD tile stitching
+  live.py            live view of the screen in the browser (MJPEG) with a clickable remote
   install.py         DUID / Samsung-certificate install path (untested)
   samsung_cert.py    Samsung certificate creation (untested)
 .claude/skills/      Claude Code skills (tv-control, tv-youtube)
