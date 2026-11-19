@@ -64,7 +64,7 @@ def main(argv):
         import time
         from pathlib import Path
         sys.path.insert(0, str(Path(__file__).with_name("tvshot")))
-        from shot import screenshot, screenshot_hd
+        from shot import is_blank, screenshot, screenshot_hd
         hd = "--hd" in args
         args = [a for a in args if a != "--hd"]
         name = f"tv_{'hd_' if hd else ''}{time.strftime('%Y%m%d_%H%M%S')}.png"
@@ -73,6 +73,9 @@ def main(argv):
         img = screenshot_hd(tv.host) if hd else screenshot(tv.host)
         img.save(out)
         print(f"{out} ({img.width}x{img.height})")
+        if is_blank(img):
+            print("warning: the frame is all black; the TV reported success, but capture may be blocked",
+                  file=sys.stderr)
     elif cmd == "on":
         tv.power_on()
         print("Wake-on-LAN sent.")
